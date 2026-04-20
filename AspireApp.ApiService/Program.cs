@@ -1,5 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Register postgresql service for DI
+builder.AddNpgsqlDataSource(connectionName: "pgsql");
+
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 
