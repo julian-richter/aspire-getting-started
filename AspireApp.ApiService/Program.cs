@@ -1,7 +1,9 @@
+using Npgsql;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Register postgresql service for DI
-builder.AddNpgsqlDataSource(connectionName: "pgsql");
+builder.AddNpgsqlDataSource(connectionName: "appdb");
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
@@ -39,6 +41,21 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+
+app.MapGet("/db-test", async (NpgsqlDataSource ds) =>
+{
+    await using var connection = await ds.OpenConnectionAsync();
+    await using var command = new NpgsqlCommand("SELECT NOW()", connection);
+
+    var result = await command.ExecuteScalarAsync();
+
+    return Results.Ok(new
+    {
+        message = "PostgreSQL connectin works.",
+        serverTime = result
+    });
+});
 
 app.MapDefaultEndpoints();
 

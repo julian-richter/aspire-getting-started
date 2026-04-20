@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("postgres").WithDataVolume(isReadOnly: false);
-var pgsql = postgres.AddDatabase("postgres");
+var pgsql = postgres.AddDatabase("appdb");
 
 var apiService = builder.AddProject<Projects.AspireApp_ApiService>("apiservice")
     .WaitFor(pgsql)
